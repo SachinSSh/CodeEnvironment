@@ -1,1 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Code Executor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        .execution {
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .code {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .output {
+            background-color: #e8f5e9;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #ffebee;
+            color: red;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .flash {
+            color: red;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Python Code Executor</h1>
+        <div>
+            Welcome, {{ session.username }}!
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
 
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <textarea name="code" placeholder="Enter your Python code here"></textarea>
+        <button type="submit">Execute</button>
+    </form>
+
+    <h2>Execution History</h2>
+    {% for entry in history %}
+        <div class="execution">
+            <div class="code">{{ entry.code }}</div>
+            {% if entry.output %}
+                <div class="output">
+                    <strong>Output:</strong>
+                    <pre>{{ entry.output }}</pre>
+                </div>
+            {% endif %}
+            {% if entry.error %}
+                <div class="error">
+                    <strong>Error:</strong>
+                    <pre>{{ entry.error }}</pre>
+                </div>
+            {% endif %}
+            <small>Executed at: {{ entry.timestamp }}</small>
+        </div>
+    {% endfor %}
+</body>
+</html>
