@@ -1,7 +1,7 @@
 # CodeEnvironment
-Flask Web Application for Running Python Code in Cells and Storing User Data
+Flask Web Application for Running Python Code in Cells a
 
-# Flask Web Application for Running Python Code & Storing User Data
+# Flask Web Application for Running Python Code 
 
 This Flask web application allows users to execute Python code in isolated cells, similar to Jupyter Notebooks, while securely storing usernames in an SQLite database. It features a simple, interactive interface where users can input and execute Python code, with results displayed in real time. The app also maintains user data through a secure, lightweight SQLite database.
 
