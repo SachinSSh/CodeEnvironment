@@ -18,7 +18,7 @@ This Flask web application allows users to execute Python code in isolated cells
 - **Flask**: A lightweight Python web framework to handle HTTP requests and serve content.
 - **SQLite**: A lightweight database for storing user data.
 - **Jinja2**: Templating engine used to render dynamic HTML pages.
-- **JavaScript**: For interactive features and real-time updates (optional).
+- **JavaScript**: For interactive features and real-time updates.
 - **HTML/CSS**: For the front-end interface.
 
 ## Installation
