@@ -1,58 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
+    <meta charset="UTF-8">
+    <title>Register - Code Executor</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 500px;
+            max-width: 400px;
             margin: 0 auto;
             padding: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
+            text-align: center;
         }
         input {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
+            padding: 10px;
+            margin: 10px 0;
         }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-        }
-        .flash {
+        .error {
             color: red;
-            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
-    <h1>Register</h1>
-
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="flash">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <form method="post">
-        <div class="form-group">
-            <label>Username:</label>
-            <input type="text" name="username" required>
-        </div>
-        <div class="form-group">
-            <label>Password:</label>
-            <input type="password" name="password" required>
-        </div>
+    <h2>Register</h2>
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Register</button>
     </form>
-
-    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+    <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
 </body>
 </html>
