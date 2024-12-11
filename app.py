@@ -7,6 +7,7 @@ from datetime import datetime
 from flask import Flask, request, render_template, jsonify, session, redirect, url_for
 import numpy as np
 import matplotlib
+import pdf4u
 
 matplotlib.use('Agg')  # Set non-interactive backend
 import matplotlib.pyplot as plt
