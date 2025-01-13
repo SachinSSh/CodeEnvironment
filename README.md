@@ -10,7 +10,7 @@ This Flask web application allows users to execute Python code in isolated cells
 - **Run Python Code**: Execute Python code in individual cells, similar to a Jupyter Notebook experience.
 - **User Management**: Usernames are stored securely in an SQLite database.
 - **Real-Time Execution**: See code output immediately after execution.
-- **Responsive Interface**: Simple and clean web interface for easy interaction with the app.
+- **Responsive Interface**: Simple and clean web interface for easy interaction with the app.sx
 - **Lightweight**: Built with Flask and SQLite for fast setup and low resource usage.
 
 ## Technologies Used
