@@ -1,1 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Code Executor</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    #code-input {
+        width: 100%;
+        min-height: 250px;
+        font-size: 16px;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+    #history {
+        margin-top: 20px;
+        border-top: 1px solid #ddd;
+    }
+    .code-cell {
+        background-color: #f4f4f4;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .code-cell pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    /* Updated plot image styling */
+    .plot-image {
+        max-width: 500px;  /* New: Set a fixed maximum width */
+        max-height: 350px; /* New: Set a fixed maximum height */
+        object-fit: contain; /* New: Maintain aspect ratio */
+        display: block;    /* New: Make it a block element */
+        margin: 10px auto; /* New: Center the image */
+    }
+    .user-info {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+</style>
+</head>
+<body>
+    <div class="user-info">
+        Welcome, {{ session['username'] }}!
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
 
+    <h1>Python Code Executor</h1>
+    <form id="code-form">
+        <textarea id="code-input" placeholder="Enter your Python code here..."></textarea>
+        <button type="submit">Execute</button>
+        <button type="button" id="clear-history">Clear History</button>
+    </form>
+
+    <div id="result"></div>
+
+    <div id="history">
+        <h2>Execution History</h2>
+        {% for cell in code_history %}
+            <div class="code-cell">
+                <p><strong>Timestamp:</strong> {{ cell[6] }}</p>
+                <p><strong>Code:</strong></p>
+                <pre>{{ cell[2] }}</pre>
+                {% if cell[3] %}
+                    <p><strong>Output:</strong></p>
+                    <pre>{{ cell[3] }}</pre>
+                {% endif %}
+                {% if cell[4] %}
+                    <p><strong>Error:</strong></p>
+                    <pre style="color: red;">{{ cell[4] }}</pre>
+                {% endif %}
+                {% if cell[5] %}
+                    <img src="data:image/png;base64,{{ cell[5] }}" class="plot-image">
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        document.getElementById('code-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const code = document.getElementById('code-input').value;
+
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `code=${encodeURIComponent(code)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                const historyDiv = document.getElementById('history');
+
+                // Display current execution result
+                let resultHTML = `
+                    <h3>Last Execution</h3>
+                    <div class="code-cell">
+                        <p><strong>Timestamp:</strong> ${data.cell.timestamp}</p>
+                        <p><strong>Code:</strong></p>
+                        <pre>${data.cell.code}</pre>
+                `;
+
+                if (data.cell.output) {
+                    resultHTML += `
+                        <p><strong>Output:</strong></p>
+                        <pre>${data.cell.output}</pre>
+                    `;
+                }
+
+                if (data.cell.error) {
+                    resultHTML += `
+                        <p><strong>Error:</strong></p>
+                        <pre style="color: red;">${data.cell.error}</pre>
+                    `;
+                }
+
+                if (data.cell.plot) {
+                    resultHTML += `
+                        <img src="data:image/png;base64,${data.cell.plot}" class="plot-image">
+                    `;
+                }
+
+                resultHTML += '</div>';
+                resultDiv.innerHTML = resultHTML;
+
+                // Optionally, you might want to update the history dynamically here
+                location.reload();
+            });
+        });
+
+        document.getElementById('clear-history').addEventListener('click', function() {
+            fetch('/clear_history', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    location.reload();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
