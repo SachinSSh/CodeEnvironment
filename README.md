@@ -29,10 +29,3 @@ To run this application locally, follow the steps below:
 ```bash
 git clone https://github.com/SachinSSh/CodeEnvironment.git
 
-csabc ac
-svnoiv wh vve
-gc vje vew o
-uh vho vh e
-acygd ciac
-canivvdnvnv
- visjv v
