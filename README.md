@@ -33,7 +33,6 @@ njscczc
 ccygcsbicancjnaknvklnsv
 jbjkbj
 scacvvaedvasv
-csankjcna sdcasccancojnaic
 kmokmk
 afaf
 jnwvjknv
