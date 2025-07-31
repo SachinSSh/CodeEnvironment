@@ -30,5 +30,4 @@ To run this application locally, follow the steps below:
 git clone https://github.com/SachinSSh/CodeEnvironment.git
 vnajnviv
  vwjovij
-wv jwiwevj wvevevvvjsnjnvs
-e v
+wv j
