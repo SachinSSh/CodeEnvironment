@@ -32,7 +32,7 @@ hbh
 vnajnviv
  vwjovijcnoiasnoinjcsnvjsnvk
 acujaoicjaocnvsnvjnsvikujnjknjninjkn
-ivjnwsvknsvjcnoav jco ac
+ivjnwsvknsvjcnoav jco ackmk, mol,p
 bvsbviudvo  scahbcajmkmkm
 jknkmwv
 wv jbhnhjknjnkjnvjsvn
