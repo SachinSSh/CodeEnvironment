@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python Code Executor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.32.2/src-noconflict/ace.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        #app-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        #code-editor {
+            height: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        #actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-run {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-clear {
+            background-color: #f44336;
+            color: white;
+        }
+        .code-cell {
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .code-input {
+            background-color: #f1f1f1;
+            padding: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .code-output {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #e0e0e0;
+        }
+        .code-error {
+            color: red;
+            background-color: #fff0f0;
+        }
+        .plot-output {
+            max-width: 100%;
+            display: block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <h1>Python Code Executor</h1>
+        
+        <div id="actions">
+            <button class="btn btn-run" onclick="runCode()">
+                <i class="fas fa-play"></i> Run
+            </button>
+            <button class="btn btn-clear" onclick="clearHistory()">
+                <i class="fas fa-trash"></i> Clear History
+            </button>
+        </div>
+
+        <div id="code-editor"></div>
+
+        <div id="code-history">
+            {% for cell in code_history %}
+            <div class="code-cell" id="cell-{{ cell.id }}">
+                <div class="code-input">{{ cell.code }}</div>
+                {% if cell.error %}
+                <div class="code-output code-error">{{ cell.error }}</div>
+                {% elif cell.output %}
+                <div class="code-output">{{ cell.output }}</div>
+                {% endif %}
+                {% if cell.plot %}
+                <img src="data:image/png;base64,{{ cell.plot }}" class="plot-output" />
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        var editor = ace.edit("code-editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/python");
+        editor.setOption("showPrintMargin", false);
+
+        function runCode() {
+            var code = editor.getValue();
+            
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `code=${encodeURIComponent(code)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                var historyContainer = document.getElementById('code-history');
+                var newCell = document.createElement('div');
+                newCell.className = 'code-cell';
+                newCell.id = `cell-${data.cell.id}`;
+
+                var codeInput = document.createElement('div');
+                codeInput.className = 'code-input';
+                codeInput.textContent = data.cell.code;
+                newCell.appendChild(codeInput);
+
+                if (data.cell.error) {
+                    var errorOutput = document.createElement('div');
+                    errorOutput.className = 'code-output code-error';
+                    errorOutput.textContent = data.cell.error;
+                    newCell.appendChild(errorOutput);
+                } else if (data.cell.output) {
+                    var outputDiv = document.createElement('div');
+                    outputDiv.className = 'code-output';
+                    outputDiv.textContent = data.cell.output;
+                    newCell.appendChild(outputDiv);
+                }
+
+                if (data.cell.plot) {
+                    var plotImg = document.createElement('img');
+                    plotImg.src = `data:image/png;base64,${data.cell.plot}`;
+                    plotImg.className = 'plot-output';
+                    newCell.appendChild(plotImg);
+                }
+
+                historyContainer.insertBefore(newCell, historyContainer.firstChild);
+
+                editor.setValue('', -1);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function clearHistory() {
+            fetch('/clear_history', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('code-history').innerHTML = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
