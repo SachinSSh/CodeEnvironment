@@ -12,7 +12,6 @@ class DataStreamProcessor:
 
     def data_generator(self, total_records=1000):
         for _ in range(total_records):
-            # Simulate streaming data
             record = {
                 'timestamp': time.time(),
                 'value': random.uniform(0, 100),
@@ -24,7 +23,6 @@ class DataStreamProcessor:
     def process_data(self):
         while not self.input_queue.empty():
             record = self.input_queue.get()
-            # Perform real-time processing
             processed_record = {
                 'timestamp': record['timestamp'],
                 'normalized_value': (record['value'] - 50) / 25,
@@ -33,13 +31,11 @@ class DataStreamProcessor:
             self.output_queue.put(processed_record)
 
     def start_processing(self):
-        # Create worker processes
         workers = [
             multiprocessing.Process(target=self.process_data)
             for _ in range(self.num_workers)
         ]
 
-        # Start data generation and worker processes
         generator = multiprocessing.Process(target=self.data_generator)
         generator.start()
 
