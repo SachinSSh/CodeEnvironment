@@ -11,7 +11,6 @@ class DataPreprocessor:
         self.numerical_columns = numerical_columns
         self.categorical_columns = categorical_columns
 
-        # Create preprocessing steps
         self.preprocessor = ColumnTransformer(
             transformers=[
                 ('num', Pipeline([
@@ -28,7 +27,6 @@ class DataPreprocessor:
         return self.preprocessor.fit_transform(X)
 
 
-# Usage example
 data = pd.DataFrame({
     'age': [25, np.nan, 35, 45],
     'income': [50000, 60000, np.nan, 75000],
