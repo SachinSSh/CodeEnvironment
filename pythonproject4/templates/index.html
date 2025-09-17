@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Code Executor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .cell {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        pre {
+            background-color: #efefef;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Python Code Executor with History</h1>
+    <form method="post">
+        <textarea name="code" rows="10" cols="80" placeholder="Write your Python code here..."></textarea><br>
+        <button type="submit">Run Code</button>
+    </form>
+    <h2>History</h2>
+    {% for idx, entry in enumerate(history) %}
+    <div class="cell">
+        <h3>Code:</h3>
+        <pre>{{ entry.code }}</pre>
+        {% if entry.output %}
+            <h3>Output:</h3>
+            <pre>{{ entry.output }}</pre>
+        {% endif %}
+        {% if entry.error %}
+            <h3>Error:</h3>
+            <pre style="color: red;">{{ entry.error }}</pre>
+        {% endif %}
+        {% if entry.plot %}
+    <h3>Plot:</h3>
+    <img src="{{ url_for('plot', plot_id=idx) }}?v={{ loop.index }}" alt="Generated Plot">
+{% endif %}
+
+    </div>
+{% endfor %}
+
+</body>
+</html>
