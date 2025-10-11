@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python Plot Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+        }
+        .code-input {
+            font-family: 'Courier New', monospace;
+            background: rgba(45, 55, 72, 0.8);
+            color: #e2e8f0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        .execution {
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .code {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .output {
+            background-color: #e8f5e9;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #ffebee;
+            color: red;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .flash {
+            color: red;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-gray-900">
+    <div class="container mx-auto grid grid-cols-2 gap-6">
+        <div>
+            <textarea
+                id="code-input"
+                rows="15"
+                class="code-input w-full p-4 rounded-lg border-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your Python plot code here..."
+            ></textarea>
+            <button
+                id="execute-btn"
+                class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+                Generate Plot
+            </button>
+
+            <div id="output" class="mt-4 bg-gray-800 text-green-400 p-4 rounded"></div>
+        </div>
+        <div class="header">
+        <h1>Python Code Executor</h1>
+        <div>
+            Welcome, {{ session.username }}!
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <textarea name="code" placeholder="Enter your Python code here"></textarea>
+        <button type="submit">Execute</button>
+    </form>
+
+    <h2>Execution History</h2>
+    {% for entry in history %}
+        <div class="execution">
+            <div class="code">{{ entry.code }}</div>
+            {% if entry.output %}
+                <div class="output">
+                    <strong>Output:</strong>
+                    <pre>{{ entry.output }}</pre>
+                </div>
+            {% endif %}
+            {% if entry.error %}
+                <div class="error">
+                    <strong>Error:</strong>
+                    <pre>{{ entry.error }}</pre>
+                </div>
+            {% endif %}
+            <small>Executed at: {{ entry.timestamp }}</small>
+        </div>
+    {% endfor %}
+
+        <div>
+            <div
+                id="plot-container"
+                class="bg-gray-800 rounded-lg p-4 min-h-[600px] flex items-center justify-center"
+            >
+                <p class="text-gray-500">Your plot will appear here</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('execute-btn').addEventListener('click', function() {
+            const code = document.getElementById('code-input').value;
+            const outputDiv = document.getElementById('output');
+            const plotContainer = document.getElementById('plot-container');
+
+            // Clear previous output and plot
+            outputDiv.innerHTML = '';
+            plotContainer.innerHTML = '<p class="text-gray-500">Generating plot...</p>';
+
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `code=${encodeURIComponent(code)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle output
+                if (data.output) {
+                    outputDiv.innerHTML = `<pre>${escapeHtml(data.output)}</pre>`;
+                }
+
+                // Handle error
+                if (data.error) {
+                    outputDiv.innerHTML = `<pre class="text-red-400">${escapeHtml(data.error)}</pre>`;
+                }
+
+                // Handle plot
+                if (data.plot) {
+                    plotContainer.innerHTML = `
+                        <img
+                            src="data:image/png;base64,${data.plot}"
+                            alt="Generated Plot"
+                            class="max-w-full max-h-[600px] object-contain"
+                        >
+                    `;
+                } else {
+                    plotContainer.innerHTML = '<p class="text-gray-500">No plot generated</p>';
+                }
+            })
+            .catch(error => {
+                plotContainer.innerHTML = `<p class="text-red-400">Error: ${error}</p>`;
+            });
+        });
+
+        // Helper function to escape HTML
+        function escapeHtml(unsafe) {
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
