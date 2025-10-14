@@ -28,6 +28,3 @@ To run this application locally, follow the steps below:
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/SachinSSh/CodeEnvironment.git
-
-jnjnjomnknvs vsvkimik in
-ikbujnwfguy fyw fsacgi ygi 
