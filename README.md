@@ -23,7 +23,7 @@ This Flask web application allows users to execute Python code in isolated cells
 
 ## Installation
 
-To run this application locally, follow the steps below:
+To run this application locally:
 
 ### 1. Clone the repository
 ```bash
