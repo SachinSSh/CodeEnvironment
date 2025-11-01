@@ -150,7 +150,7 @@ def index():
                 if error:
                     flash(error)
 
-    # Get execution history
+    # Get code execution history
     db = get_db()
     history = db.execute('''
         SELECT code, output, error, timestamp 
@@ -165,4 +165,5 @@ def index():
 
 
 if __name__ == '__main__':
+
     app.run(debug=True)
